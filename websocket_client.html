@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+    <script>
+      $(document).ready(function(){
+        function debug(str){ $("#debug").append("<p>"+str+"</p>"); };
+
+        ws = new WebSocket("ws://0.0.0.0:8080");
+        ws.onmessage = function(evt) {
+          $("#msg").append("<p>"+evt.data+"</p>"); 
+        };
+        ws.onclose   = function() { debug("socket closed"); };
+        ws.onopen    = function() {
+          debug("connected...");
+          ws.send("hello server");
+        };
+
+        $('#send').on('click', function() {
+          sendToServer(ws, $('#content').val());
+        });
+
+      });
+
+      function sendToServer(socket, content) {
+        socket.send(content);
+      };
+    </script>
+  </head>
+  <body>
+    <input type='text' id='content'>
+    <a href='#' id='send'>Send to server</a>
+    <div id="debug"></div>
+    <div id="msg"></div>
+  </body>
+</html>
